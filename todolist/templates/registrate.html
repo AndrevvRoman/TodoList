@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="" method="post">    
+    <!-- Form Name -->
+    <legend>Регистрация</legend>
+    {% csrf_token %}
+
+    <!-- Text input-->
+    <div class="control-group">
+      <label class="control-label" for="mail">Mail</label>
+      <div class="controls">
+        <input id="mail" name="mail" type="text" placeholder="Enter mail" class="input" required>
+      </div>
+    </div>
+
+    <!-- Password input-->
+    <div class="control-group">
+      <label class="control-label" for="passwordinput">Password</label>
+      <div class="controls">
+        <input id="passwordinput" name="password" type="password" placeholder="Input password" class="input" required="">
+
+    <!-- Button -->
+    <div class="control-group">
+        <label class="control-label" for="Registrate"></label>
+        <div class="controls">
+        <button id="Registrate" name="Registrate" class="btn btn-primary" type="submit">Log in</button>
+        </div>
+    </div>
+{% endblock %}
