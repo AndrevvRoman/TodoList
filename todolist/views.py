@@ -44,8 +44,10 @@ def category(request):
     return render(request, "category.html", {"categories": categories})
 
 def login(request):
+    isLoggined = False
     if request.method == "POST":
         if "Login" in request.POST:
+            
             users = User.objects.all()
             enteredMail = request.POST["mail"]
             enteredPass = request.POST["password"]
@@ -54,9 +56,9 @@ def login(request):
                     categories = Category.objects.all()
                     print("Founded login in list")
                     isLoggined = True
-                    return render(request, "category.html", {"categories": categories})
+                    return render(request, "category.html", {"categories": categories, "isLoggined" : isLoggined})
             print("Didnt founded")
-    return render(request, "login.html", {})
+    return render(request, "login.html", {"isLoggined" : isLoggined})
 
 def registrate(request):
     if request.method == "POST":
