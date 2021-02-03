@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect #для отображения и редиректа берем необходимые классы
 from django.http import HttpResponse
-from .models import TodoList, Category, User #не забываем наши модели
+from .models import TodoList, User #не забываем наши модели
+
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
  
 def redirect_view(request):
-	return redirect("/login") # редирект с главной на категории
+	return redirect("/registrate") # редирект с главной на категории
 
 def todo(request):
     todos = TodoList.objects.all() #запрашиваем все объекты todo через менеджер объектов
@@ -25,51 +30,48 @@ def todo(request):
                 todo.delete() #удаление дела
     return render(request, "todo.html", {"todos": todos, "categories": categories})
 
-def category(request):
-    categories = Category.objects.all()  #запрашиваем все объекты Категорий
-    if request.method == "POST": #проверяем что это метод POST
-        if "Add" in request.POST: #если собираемся добавить
-            name = request.POST["name"] #имя нашей категории
-            category = Category(name=name) #у нашей категории есть только имя
-            category.save() # сохранение нашей категории
-            return redirect("/category")
-        if "Delete" in request.POST: # проверяем есть ли удаление
-            check = request.POST.getlist('check') #немного изменил название массива в отличии от todo, что бы было меньше путаницы в коде
-            for i in range(len(check)):
-                try:
-                    сateg = Category.objects.filter(id=int(check[i]))
-                    сateg.delete()   #удаление категории
-                except BaseException: # вне сомнения тут нужно нормально переписать обработку ошибок, но на первое время хватит и этого
-                    return HttpResponse('<h1>Сначала удалите карточки с этими категориями)</h1>')
-    return render(request, "category.html", {"categories": categories})
-
-def login(request):
-    isLoggined = False
-    if request.method == "POST":
-        if "Login" in request.POST:
+# def login(request):
+#     isLoggined = False
+#     if request.method == "POST":
+#         if "Login" in request.POST:
             
-            users = User.objects.all()
-            enteredMail = request.POST["mail"]
-            enteredPass = request.POST["password"]
-            for i in users:
-                if i.mail == enteredMail and i.password == enteredPass:
-                    categories = Category.objects.all()
-                    print("Founded login in list")
-                    isLoggined = True
-                    return render(request, "category.html", {"categories": categories, "isLoggined" : isLoggined})
-            print("Didnt founded")
-    return render(request, "login.html", {"isLoggined" : isLoggined})
+#             users = User.objects.all()
+#             enteredMail = request.POST["mail"]
+#             enteredPass = request.POST["password"]
+#             for i in users:
+#                 if i.mail == enteredMail and i.password == enteredPass:
+#                     categories = Category.objects.all()
+#                     print("Founded login in list")
+#                     isLoggined = True
+#                     return render(request, "category.html", {"categories": categories, "isLoggined" : isLoggined})
+#             print("Didnt founded")
+#     return render(request, "login.html", {"isLoggined" : isLoggined})
+
+# def registrate(request):
+#     if request.method == "POST":
+#         if "Registrate" in request.POST:
+#             users = User.objects.all()
+#             enteredMail = request.POST["mail"]
+#             enteredPass = request.POST["password"]
+#             for i in users:
+#                 if i.mail == enteredMail:
+#                    return HttpResponse('<h1>Аккаунт уже существует</h1>')
+#             login = User(mail=enteredMail,password=enteredPass)
+#             login.save()
+#             return redirect("/login")
+#     return render(request, "registrate.html",{})
+
+@login_required
+def index(request):
+    return render(request,"category.html")
 
 def registrate(request):
+    context = {}
+    form = UserCreationForm(request.POST or None)
     if request.method == "POST":
-        if "Registrate" in request.POST:
-            users = User.objects.all()
-            enteredMail = request.POST["mail"]
-            enteredPass = request.POST["password"]
-            for i in users:
-                if i.mail == enteredMail:
-                   return HttpResponse('<h1>Аккаунт уже существует</h1>')
-            login = User(mail=enteredMail,password=enteredPass)
-            login.save()
-            return redirect("/login")
-    return render(request, "registrate.html",{})
+        if form.is_valid():
+            user = form.save()
+            login(request,user)
+            return render(request,"category.html")
+    context['form']=form
+    return render(request,"registrate.html", context)

@@ -15,17 +15,22 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from todolist.views import todo
-from todolist.views import category
-from todolist.views import login
+# from todolist.views import todo
+# from todolist.views import category
+# from todolist.views import login
 from todolist.views import registrate
 from todolist.views import redirect_view
- 
+
 urlpatterns = [
 	url(r'$^', redirect_view ),
-	url(r'^admin/', admin.site.urls),
-	url(r'^todo/', todo, name="TodoList"),
-	url(r'^category/', category, name="Category"),
-    url(r'^login/', login, name="Login"),
+# 	url(r'^admin/', admin.site.urls),
+# 	url(r'^todo/', todo, name="TodoList"),
+# 	url(r'^category/', category, name="Category"),
+#     # url(r'^login/', login, name="Login"),
     url(r'^registrate/', registrate, name="registrate"),
 ]
+
+# urlpatterns = [
+#     # path('',todolist.views.index,name="home"),
+#     path('registrate/',registrate,name="registrate")
+# ]
