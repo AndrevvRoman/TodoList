@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect #для отображения и редиректа берем необходимые классы
 from django.http import HttpResponse
-from .models import TodoList, User #не забываем наши модели
+from .models import Todo #не забываем наши модели
 
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
  
 def redirect_view(request):
@@ -30,36 +30,16 @@ def todo(request):
                 todo.delete() #удаление дела
     return render(request, "todo.html", {"todos": todos, "categories": categories})
 
-# def login(request):
-#     isLoggined = False
-#     if request.method == "POST":
-#         if "Login" in request.POST:
-            
-#             users = User.objects.all()
-#             enteredMail = request.POST["mail"]
-#             enteredPass = request.POST["password"]
-#             for i in users:
-#                 if i.mail == enteredMail and i.password == enteredPass:
-#                     categories = Category.objects.all()
-#                     print("Founded login in list")
-#                     isLoggined = True
-#                     return render(request, "category.html", {"categories": categories, "isLoggined" : isLoggined})
-#             print("Didnt founded")
-#     return render(request, "login.html", {"isLoggined" : isLoggined})
-
-# def registrate(request):
-#     if request.method == "POST":
-#         if "Registrate" in request.POST:
-#             users = User.objects.all()
-#             enteredMail = request.POST["mail"]
-#             enteredPass = request.POST["password"]
-#             for i in users:
-#                 if i.mail == enteredMail:
-#                    return HttpResponse('<h1>Аккаунт уже существует</h1>')
-#             login = User(mail=enteredMail,password=enteredPass)
-#             login.save()
-#             return redirect("/login")
-#     return render(request, "registrate.html",{})
+def sign_in(request):
+    if request.method == "POST":
+        if "Login" in request.POST:
+            enteredUsername = request.POST["username"]
+            enteredPass = request.POST["password"]
+            user = authenticate(request, username=enteredUsername, password=enteredPass)
+            if user is not None:
+                login(request,user)
+                return render(request, "todo.html", {"todos" : Todo.objects.filter(owner=user)})
+    return render(request, "sign_in.html", {"hasError" : True})
 
 @login_required
 def index(request):
@@ -67,11 +47,16 @@ def index(request):
 
 def registrate(request):
     context = {}
-    form = UserCreationForm(request.POST or None)
     if request.method == "POST":
-        if form.is_valid():
-            user = form.save()
-            login(request,user)
-            return render(request,"category.html")
-    context['form']=form
+        enteredMail = request.POST["mail"]
+        enteredUsername = request.POST["username"]
+        enteredPass1 = request.POST["password1"]
+        enteredPass2 = request.POST["password1"]
+        if enteredPass1 == enteredPass2 and not User.objects.filter(email=enteredMail).exists():
+            print("Creating new user")
+            newUser = User.objects.create_user(enteredUsername, enteredMail, enteredPass1)
+            newUser.save()
+            return render(request,"sign_in.html", context)
+        else:
+            context["hasError"] = True
     return render(request,"registrate.html", context)

@@ -1,10 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
-  <form method="post">    
-      <!-- Form Name -->
-      <legend>Регистрация</legend>
-      {% csrf_token %}
-      {{form.as_p}}
-      <input type="submit" value="Sign up">
-  </form>
+<form action="" method="post">    
+    <!-- Form Name -->
+    <legend>Регистрация</legend>
+    {% csrf_token %}
+
+    <!-- Text input-->
+    <div class="control-group">
+      <label class="control-label" for="mail">Mail</label>
+      <div class="controls">
+        <input id="mail" name="mail" type="text" placeholder="Enter mail" class="input" required>
+      </div>
+    </div>
+
+    <!-- Text input-->
+    <div class="control-group">
+      <label class="control-label" for="mail">Username</label>
+      <div class="controls">
+        <input id="username" name="username" type="text" placeholder="Enter username" class="input" required>
+      </div>
+    </div>
+
+    <!-- Password input-->
+    <div class="control-group">
+      <label class="control-label" for="passwordinput">Password</label>
+      <div class="controls">
+        <input id="passwordinput" name="password1" type="password" placeholder="Input password" class="input" required>
+
+      <div class="control-group">
+        <label class="control-label" for="passwordinput">Confirm password</label>
+        <div class="controls">
+          <input id="passwordinput" name="password2" type="password" placeholder="Input password" class="input" required>
+
+    <!-- Button -->
+    <div class="control-group">
+        <label class="control-label" for="Registrate"></label>
+        <div class="controls">
+        <button id="Registrate" name="Registrate" class="btn btn-primary" type="submit">Registrate</button>
+        </div>
+    </div>
+    {% if hasError %}
+      <h1> Something gone wrong</h1>
+    {% endif %}
 {% endblock %}

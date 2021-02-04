@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import TodoList, User
+from .models import Todo
 
 # admin.site.register(Category)
-admin.site.register(TodoList)
-admin.site.register(User)
+admin.site.register(Todo)
+# admin.site.register(User)

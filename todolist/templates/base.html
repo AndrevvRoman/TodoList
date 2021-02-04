@@ -11,15 +11,16 @@
 <body>
 <div django-app="TaskManager">
 	<nav class ="navbar is-success" role="navigation" aria-label="main navigation">
-		{% if isLoggined %}
+		
      	<div class="navbar-menu ">
-			<h1> Welcome {{user}} </h1>
         	<div class="navbar-start">
-        	<a class="navbar-item" href="../category"> Категории</a>
-        	<a class="navbar-item" href="../todo"> Список дел </a>
+			<h1> Welcome</h1>
+			<a class="navbar-item" href="../sign_in"> Войти </a>
+			{% if isLoggined %}	
+			<a class="navbar-item" href="../todo"> Список дел </a>
+			{% endif %}
         	</div>
 		 </div>
-		 {% endif %}
 	</nav>
 <!--     в блок контент мы будем подгружать наши странички категорий и тудушек-->
 {% block content %}
