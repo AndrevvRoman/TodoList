@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import login
-from django.contrib.auth import authenticate
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 
 from .models import Todo 
@@ -10,9 +9,10 @@ from .models import Todo
 def redirect_view(request):
 	return redirect("/sign_in")
 
+@login_required
 def todo(request):
     todos = Todo.objects.filter(owner=request.user)
-
+    print("todo")
     if request.method == "POST":
         if "Add" in request.POST:
             title = request.POST["description"]
@@ -25,7 +25,7 @@ def todo(request):
             checkedlist = request.POST.getlist('checkedbox') # берем список выделенные дел, которые мы собираемся удалить
             for i in range(len(checkedlist)):
                 todo = Todo.objects.filter(id=int(checkedlist[i]))
-                todo.delete() #удаление дела
+                todo.delete()
     return render(request, "todo.html", {"todos": todos})
 
 def sign_in(request):
@@ -38,9 +38,14 @@ def sign_in(request):
                 login(request,user)
                 todos = Todo.objects.filter(owner=request.user)
                 return redirect('/todo')
-                # return redirect(reverse('todo.html',{"todos" : Todo.objects.filter(owner=user)}))
-                # return render(request, "todo.html", {"todos" : Todo.objects.filter(owner=user)})
     return render(request, "sign_in.html", {"hasError" : False})
+
+def sign_out(request):
+    print("sign_out")
+    if request.method == "POST":
+        if "sign_out" in request.POST:
+            logout(request)
+            return redirect('sign_in')
 
 def registrate(request):
     context = {}

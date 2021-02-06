@@ -5,24 +5,27 @@
   <title> Приложение для дел</title>
   {% load static %}
 	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}"/>
-   <link rel="stylesheet" type="text/css" href="{% static 'bulma.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'bulma.min.css' %}">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <div django-app="TaskManager">
-	<nav class ="navbar is-success" role="navigation" aria-label="main navigation">
-		
-     	<div class="navbar-menu ">
-        	<div class="navbar-start">
-			<h1> Welcome</h1>
-			<a class="navbar-item" href="../sign_in"> Войти </a>
-			{% if isLoggined %}	
-			<a class="navbar-item" href="../todo"> Список дел </a>
-			{% endif %}
-        	</div>
-		 </div>
-	</nav>
-<!--     в блок контент мы будем подгружать наши странички категорий и тудушек-->
+		<nav class ="navbar is-success" role="navigation" aria-label="main navigation">
+			<div class="navbar-menu ">
+				<div class="navbar-start">
+					<a class="navbar-item">
+						<img src="../static/logo.png" alt="Todo list for your buisness">
+					</a>
+					{% if user.is_authenticated %}
+						<a class="navbar-item" href="../todo">Список дел</a>
+						<button class="navbar-item" name="sign_out" type="submit">Выйти</button>
+					{% else %}
+						<a class="navbar-item" href="../sign_in">Войти</a>
+					{% endif %}
+				</div>
+			</div>
+		</nav>
+
 {% block content %}
 {% endblock %}
 </div>
