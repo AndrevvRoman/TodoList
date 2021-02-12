@@ -18,7 +18,7 @@
 					</a>
 					{% if user.is_authenticated %}
 						<a class="navbar-item" href="../todo">Список дел</a>
-						<button class="navbar-item" name="sign_out" type="submit">Выйти</button>
+						<a class="navbar-item" href="../sign_out">Выйти</a>
 					{% else %}
 						<a class="navbar-item" href="../sign_in">Войти</a>
 					{% endif %}

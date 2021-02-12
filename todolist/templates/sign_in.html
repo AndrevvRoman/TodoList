@@ -1,35 +1,47 @@
 {% extends 'base.html' %}
-{% block content %}
-<form action="" method="post">    
-    <!-- Form Name -->
-    <legend>Авторизация</legend>
-    {% csrf_token %}
-
-    <!-- Text input-->
-    <div class="control-group">
-      <label class="control-label" for="mail">Name</label>
-      <div class="controls">
-        <input id="username" name="username" type="text" placeholder="Enter username" class="input" required>
+{% block content %} 
+  <section class="hero is-primary is-fullheight">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+            <form action="" class="box" method="post">
+              {% csrf_token %}
+              <div class="field">
+                <label for="" class="label">Nickname</label>
+                <div class="control has-icons-left">
+                  <input name="username" type="text" placeholder="e.g. bobsmith" class="input" required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="" class="label">Password</label>
+                <div class="control has-icons-left">
+                  <input name="password" type="password" placeholder="*******" class="input" required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field" >
+                <button class="button is-success" id="Login" name="Login" type="submit">
+                  Login
+                </button>
+              </div>
+              <div class="field">
+                <label for="" class="checkbox">
+                  <a class="button is-link" href="../registrate"> Sign Up</a>
+              </label>
+            </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Password input-->
-    <div class="control-group">
-      <label class="control-label" for="passwordinput">Password</label>
-      <div class="controls">
-        <input id="passwordinput" name="password" type="password" placeholder="Input password" class="input" required="">
-
-    <!-- Button -->
-    <div class="control-group">
-        <label class="control-label" for="Login"></label>
-        <div class="controls">
-        <button id="Login" name="Login" class="btn btn-primary" type="submit">Log in</button>
-        </div>
-    </div>
-
+  </section>
     {% if hasError %}
     <h1> Something gone wrong</h1>
     {% endif %}
-
-    <a class="navbar-item" href="../registrate"> Регистрация</a>
 {% endblock %}

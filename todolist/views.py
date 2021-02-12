@@ -26,6 +26,10 @@ def todo(request):
             for i in range(len(checkedlist)):
                 todo = Todo.objects.filter(id=int(checkedlist[i]))
                 todo.delete()
+    if request.method == "GET":
+        if "sign_out" in request.GET:
+            logout(request)
+            return redirect('sign_in')
     return render(request, "todo.html", {"todos": todos})
 
 def sign_in(request):
@@ -40,25 +44,41 @@ def sign_in(request):
                 return redirect('/todo')
     return render(request, "sign_in.html", {"hasError" : False})
 
+@login_required
 def sign_out(request):
-    print("sign_out")
-    if request.method == "POST":
-        if "sign_out" in request.POST:
-            logout(request)
-            return redirect('sign_in')
+    logout(request)
+    return redirect('/sign_in')
 
 def registrate(request):
     context = {}
     if request.method == "POST":
-        enteredMail = request.POST["mail"]
-        enteredUsername = request.POST["username"]
-        enteredPass1 = request.POST["password1"]
-        enteredPass2 = request.POST["password1"]
-        if enteredPass1 == enteredPass2 and not User.objects.filter(email=enteredMail).exists():
+        if "SignUp" in request.POST:
+            enteredMail = request.POST["mail"]
+            enteredUsername = request.POST["username"]
+            enteredPass1 = request.POST["password1"]
+            enteredPass2 = request.POST["password1"]
+            try:
+                if enteredPass1 != enteredPass2:
+                    print("pass exep")
+                    raise ValueError("Password entered incorrectly!")
+                if User.objects.filter(email=enteredMail).exists():
+                    print("email exep")
+                    raise ValueError("Email already exsists!")
+                if User.objects.filter(username=enteredUsername).exists():
+                    print("email exep")
+                    raise ValueError("Nickname already exsists!")
+            except ValueError as er:
+                print("cathed exep")
+                context["hasError"] = True
+                context["errorText"] = str(er)
+                return render(request,"registrate.html", context)
+
             print("Creating new user")
             newUser = User.objects.create_user(enteredUsername, enteredMail, enteredPass1)
             newUser.save()
-            return render(request,"sign_in.html", context)
-        else:
-            context["hasError"] = True
+            return redirect('/sign_in')
+    if request.method == "GET":
+        if "DeleteError" in request.POST:
+            context["hasError"] = False
+            context["errorText"] = ""
     return render(request,"registrate.html", context)
