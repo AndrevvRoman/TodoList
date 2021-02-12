@@ -81,7 +81,10 @@ DATABASES = {
     }
 }
 
-
+ALLOWED_HOSTS = [
+    '192.168.0.6',  # Allow domain and subdomains
+    '95.191.20.122',  # Also allow FQDN and subdomains
+]
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
